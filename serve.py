@@ -1,12 +1,5 @@
 import os
 
-print("=====downloading requirements====")
-os.system('git clone https://huggingface.co/AIRI-Institute/HairFastGAN')
-os.system('cd HairFastGAN && git lfs pull && cd ..')
-os.system('mv HairFastGAN/pretrained_models pretrained_models')
-os.system('%mv HairFastGAN/input input')
-os.system('rm -rf HairFastGAN')
-
 from hair_swap import HairFast, get_parser
 from torchvision.utils import save_image
 import torch
@@ -28,4 +21,15 @@ for index,item in enumerate(photos):
         save_image(result_image, f'/home/HairFastGAN/HairFast_result{index}.png')
     else:
         result_image.save(f'/home/HairFastGAN/HairFast_result{index}.png')
+
+
+def download_and_convert_to_pil(urls):
+    pil_images = []
+    for url in urls:
+        response = requests.get(url, allow_redirects=True, headers={"User-Agent": "Mozilla/5.0"})
+        img = Image.open(BytesIO(response.content))
+        pil_images.append(img)
+        print(f"Downloaded an image of size {img.size}")
+    return pil_images
+
 
