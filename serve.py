@@ -1,8 +1,17 @@
+import os
+
+print("=====downloading requirements====")
+os.system('git clone https://huggingface.co/AIRI-Institute/HairFastGAN')
+os.system('cd HairFastGAN && git lfs pull && cd ..')
+os.system('mv HairFastGAN/pretrained_models pretrained_models')
+os.system('%mv HairFastGAN/input input')
+os.system('rm -rf HairFastGAN')
+
 from hair_swap import HairFast, get_parser
 from torchvision.utils import save_image
 import torch
 
-
+print("=====initiating hairfast====")
 # Init HairFast
 hair_fast = HairFast(get_parser().parse_args([]))
 
