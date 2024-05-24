@@ -9,5 +9,5 @@ RUN ./start.sh
 
 RUN pip install -r requirements.txt
 
-CMD [ "python","serve.py" ]
+# CMD [ "python","serve.py" ]
 

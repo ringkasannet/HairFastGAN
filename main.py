@@ -9,7 +9,7 @@ from tqdm.auto import tqdm
 from hair_swap import HairFast, get_parser
 
 
-def main(model_args, args):
+def main(model_args, args): 
     hair_fast = HairFast(model_args)
 
     experiments: list[str | tuple[str, str, str]] = []
