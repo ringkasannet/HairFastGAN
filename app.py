@@ -64,9 +64,12 @@ def chech_route():
         time.sleep(10)
         return "<p> check complete <p>"
 
+from datetime import datetime
+
 @app.route('/convert', methods=['POST'])
 def convert_images():
     print("receiving convert request....")
+    torch.cuda.empty_cache()
     checkpoint1 = time.time()
     data = request.get_json()
     face_url = data.get('face')
@@ -97,9 +100,14 @@ def convert_images():
         # checkpoint4 = time.time()
         if isinstance(result_image, torch.Tensor):
             image_byte=tensor_to_byte(result_image)
-            return send_file(BytesIO(image_byte), mimetype='image/jpeg')
-        
+            now = datetime.now() # current date and time
+            date_time = now.strftime("%H%M%S")
+            save_image(result_image,f'/home/HairFastGAN/output/{date_time}.png')
+            # return send_file(BytesIO(image_byte), mimetype='image/jpeg')
+        return "<p> succeded </p>"
     except Exception as e:
+        print("found error when swapping")
+        print(e)
         return jsonify({'error': str(e)}), 500
 
 
