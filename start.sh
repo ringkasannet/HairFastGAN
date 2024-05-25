@@ -1,6 +1,10 @@
- !/bin/bash 
+#  !/bin/bash 
 rm /bin/sh && ln -s /bin/bash /bin/sh
 # apt update
+RUN conda  create -n hairfast python=3.10 -y
+RUN source activate hairfast
+RUN conda activate hairfast
+
 apt-get update
 apt-get install zip -y
 apt-get install wget
@@ -15,6 +19,7 @@ apt-get install zip -y
 wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip
 unzip ninja-linux.zip -d /usr/local/bin/
 update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force
+
 
 # mkdir -p ~/miniconda3
 # wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
