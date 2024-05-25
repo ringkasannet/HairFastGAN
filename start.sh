@@ -4,6 +4,8 @@ apt update
 apt install zip -y
 apt install wget
 apt install git
+apt-get update
+apt-get install build-essential
 apt-get install -y git
 mkdir -p ~/miniconda3
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
@@ -16,6 +18,8 @@ source ~/.profile
 conda  create -n hairfast python=3.10 -y
 source activate hairfast
 conda activate hairfast
+conda install ipykernel
+ipython kernel install --user --name=hairfast
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
 apt-get install git-lfs
 apt update
