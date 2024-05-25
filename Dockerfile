@@ -5,7 +5,7 @@ WORKDIR /code
 COPY . .
 
 RUN chmod u+x ./start.sh
-RUN source ./start.sh
+RUN . ./start.sh
 
 RUN mkdir -p ~/miniconda3
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
