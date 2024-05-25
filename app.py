@@ -90,6 +90,7 @@ def convert_images():
         result_image = hair_fast.swap(pil_images[0],pil_images[1],pil_images[2],align=True)[0]
         checkpoint3 = time.time()
         print(f"finished swapping, took {checkpoint3-checkpoint2}")
+
         # for i in range(len(result_image)):
         #     print('saving images')
         #     if isinstance(result_image[i], torch.Tensor):
@@ -100,11 +101,14 @@ def convert_images():
         # checkpoint4 = time.time()
         if isinstance(result_image, torch.Tensor):
             image_byte=tensor_to_byte(result_image)
-            now = datetime.now() # current date and time
-            date_time = now.strftime("%H%M%S")
-            save_image(result_image,f'/home/HairFastGAN/output/{date_time}.png')
-            # return send_file(BytesIO(image_byte), mimetype='image/jpeg')
-        return "<p> succeded </p>"
+            # now = datetime.now() # current date and time
+            # date_time = now.strftime("%H%M%S")
+            checkpoint4 = time.time()
+
+            print(f"finished converting to byte, took {checkpoint4-checkpoint3}, total time: {checkpoint4-checkpoint1}")
+
+            # save_image(result_image,f'/workspace/HairFastGAN/output/{date_time}.png')
+            return send_file(BytesIO(image_byte), mimetype='image/jpeg')
     except Exception as e:
         print("found error when swapping")
         print(e)
