@@ -5,19 +5,14 @@ rm /bin/sh && ln -s /bin/bash /bin/sh
 # RUN source activate hairfast
 # RUN conda activate hairfast
 
-apt-get update
-apt-get install zip -y
-apt-get install wget
-apt-get install git
-apt-get install build-essential
-apt-get install -y git
-conda install ipykernel
-ipython kernel install --user --name=hairfast
+apt update
+apt install zip -y
+apt install wget
+apt install git
+apt install build-essential
+apt install -y git
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
-apt-get install git-lfs
-apt-get install zip -y
-wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip
-unzip ninja-linux.zip -d /usr/local/bin/
+apt install git-lfs
 
 
 # git clone https://huggingface.co/AIRI-Institute/HairFastGAN

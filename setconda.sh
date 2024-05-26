@@ -10,3 +10,6 @@ source ~/.profile
 
 ~/miniconda3/bin/conda activate hairfast
 
+conda install ipykernel
+ipython kernel install --user --name=hairfast
+
