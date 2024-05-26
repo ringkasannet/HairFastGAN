@@ -20,7 +20,7 @@ RUN unzip ninja-linux.zip -d /usr/local/bin/
 RUN update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force
 
 
-RUN conda create -n hairfast python=3.10 -y
+RUN ~/miniconda3/bin/conda create -n hairfast python=3.10 -y
 SHELL ["~/miniconda3/bin/conda","run","-n","hairfast","/bin/bash","-c"]
 # RUN conda activate hairfast
 
