@@ -10,7 +10,7 @@ SHELL ["conda","run","-n","hairfast","/bin/bash","-c"]
 # RUN conda activate hairfast
 
 RUN chmod u+x ./start.sh
-RUN . ./start.sh
+RUN ./start.sh
 
 RUN pip install -r requirements.txt
 
