@@ -5,15 +5,17 @@ rm /bin/sh && ln -s /bin/bash /bin/sh
 # RUN source activate hairfast
 # RUN conda activate hairfast
 
-apt update
-apt install zip -y
-apt install wget
-apt install git
-apt install build-essential
-apt install -y git
+apt-get update
+apt-get install zip -y
+apt-get install wget
+apt-get install git
+apt-get install build-essential
+apt-get install -y git
+conda install ipykernel
+ipython kernel install --user --name=hairfast
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
-apt install git-lfs
-
+apt-get install git-lfs
+apt-get install zip -y
 
 # git clone https://huggingface.co/AIRI-Institute/HairFastGAN
 # cd HairFastGAN && git lfs pull && cd ..
