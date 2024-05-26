@@ -5,15 +5,18 @@ rm /bin/sh && ln -s /bin/bash /bin/sh
 # RUN source activate hairfast
 # RUN conda activate hairfast
 
-apk update
-apk add zip -y
-apk add wget
-apk add git
-apk add build-essential
-apk add -y git
+sudo apt update
+sudo apt install apt
+
+apt-get update
+apt-get install zip -y
+apt-get install wget
+apt-get install git
+apt-get install build-essential
+apt-get install -y git
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
-apk add  git-lfs
-apk add zip -y
+apt-get install git-lfs
+apt-get install zip -y
 
 # git clone https://huggingface.co/AIRI-Institute/HairFastGAN
 # cd HairFastGAN && git lfs pull && cd ..
