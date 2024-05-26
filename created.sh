@@ -20,12 +20,10 @@ source /workspace/miniconda3/etc/profile.d/conda.sh
 conda activate hairfast 
 source ~/.profile
 
-/workspace/miniconda3/bin/conda install ipykernel
-ipython kernel install --user --name=hairfast
 
 wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip
-unzip ninja-linux.zip -d /usr/local/bin/
-update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force
+unzip -o ninja-linux.zip -d /usr/local/bin/
+update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force 
 
 git clone https://huggingface.co/AIRI-Institute/HairFastGAN
 cd HairFastGAN && git lfs pull && cd ..
