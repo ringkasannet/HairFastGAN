@@ -25,7 +25,7 @@ SHELL ["/root/miniconda3/bin/conda","run","-n","hairfast","/bin/bash","-c"]
 # RUN conda activate hairfast
 
 
-RUN pip install -r requirements.txt
+# RUN pip install -r requirements.txt
 
 
 
