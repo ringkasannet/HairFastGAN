@@ -6,8 +6,8 @@ COPY . .
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-RUN chmod u+x ./serve.sh
-RUN . ./serve.sh
+RUN chmod u+x ./setconda.sh
+RUN . ./setconda.sh
 
 RUN wget / git / zip
 
