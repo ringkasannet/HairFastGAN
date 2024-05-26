@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "barberfits-visualizer",
+  "private_key_id": "8410bd16f96ce419abba51d0a7d7aff3b98b4ae2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQD2auBPGjtMlGMJ\n4x41F8hqGq2PiAXeBtvHEif0LERudupWrxef2zgXoSDvVJWU0OnV+WkMCAtZHOgR\n/xYsWy6Bt9KLDriRG66PcQwQHykeofunW8pvY+ULpGPQUlKUTyZC6Odn+/H9Xjiz\nMBRaMQQf8Kv6G0kWJc0Y4MkDfhrOR/utCQ6HAEERB8IsPQQOueVfGxtMoHM5Xaqk\nyjcvjE7V/Mk7+IrGx7BLmf+J6bOv3bgRSa1RnFjHnhXuUGmtQB7KGYR90BW+e7Xy\nJwbw4oDOygWZ16vOWlXM428ifvcwq67lRsIKA1sq2vXth7SebJ54Gv+EWqH9/HUI\nDBpLMK/5AgMBAAECggEAA/BGYI1LSFiQ0q4iI/ga2HNPtd0XNurGJYLpR5JTj65v\n5W3MA16WIW6OX7Tq5SOHsUdYwfv47nYzUWJR4OieMC2XfGiCU7NtEVbduf49goNV\nSeICNNCUbyC0BbbjIgK32lbtp/BTeFjCsD6C/MQOzFHk9czs2KFHC3BAVkF0PTrK\nSBjug28uYR2xyN8vvSHgRSpj6tWpiMrLGbTlo21ffgxcqFhhNDDyXdAjJN3kUqts\nfVNjU+X5lskjsajwaaKy012/PnW8x8MqzuhVFzXIoc7zsXXfgAW+916f7OkByoJ4\nI7n2dN6dzCZowR4d7Cd620iozjDQH/gLHTZuFZgIuQKBgQD7lNZwDHHeQN8PIXFX\nGJddHQbnfI6SXjEXd+TIyAeocAqcR9cL1/IDCDbVCjg+j0lJw+PdyequLnSJtxfm\nhXQccCZxjUepOHO2j1mtmxBwPn7H11QwrHarEghh86ShHLWvoniL8fwhfYipxqub\ncsUwZN4K3SLPQ3P1ftPIauSxBQKBgQD6vtIOr+h9YRCmryfoBrm2UNNL1JJWirBz\nSETII5MWtx6awcbv0w83hnjOHiwYfOZDWcT2r1VpZ365HE4fjDbwnf6n2HcDb3AX\nUWp+OltzhQgIgQAhWBWGiB9Jar7LA+PA5LCYYVPsYl1wzc+AmqGvJBji2WlbhNkg\nhwJ7LCbFZQKBgDGaxTVOnt0NuW2IUIq1xJKNeKEIBCyD+fYAo9Ga7zec79qkp5gk\nOgmzAuy6mSBsrCypPTKr72PssPm+ai3/vkclLc9R5gFNqjMizLHYU0Nubx0ELgty\n1eshIRn/KkTCHmjFBjPBwM7xq5KeI5QA6zSBju5hb82iJSkQmr13piPpAoGAXGT2\nGC1fmNusfA8swEXCJtkPkvCoX7VJIaGunqTlLUiawWHIAVUfVVF6sFDT5M4ZNxYc\nCt4+tdFKE8HHU76h+/XsAUM1T5G/lwgMGqk8S4vokuGd/6tqeyErji0EUuCDCu/5\n1px+hSsVzVw5KuVP0K6XcPe15+BC9cZp9qMlQjUCgYBFwL6chzpsaR5Zo5KHJtIq\n7gXKmJR3flMvrlLnCtKl6kKv3ygeBV1zk5Mwejj299f1cyD/nWacexoNajJh4OeA\nIKcblzpx6xC25nxgz6x2W2Hb//77sZVvJprJHVsA8JC260qeyc9LjEtQ4Eb/lp1g\nFThUpRyJp157+rNDTDhzFA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "barberfits-bucket@barberfits-visualizer.iam.gserviceaccount.com",
+  "client_id": "113441343157900305657",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/barberfits-bucket%40barberfits-visualizer.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
