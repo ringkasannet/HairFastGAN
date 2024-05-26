@@ -1,11 +1,11 @@
-FROM runpod/pytorch:2.0.1-py3.10-cuda11.8.0-devel-ubuntu22.04
+FROM pytorch/pytorch/conda-cuda
 
 WORKDIR /code
 
 COPY . .
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-
+RUN 
 RUN chmod u+x ./setconda.sh
 RUN bash -i ./setconda.sh
 
