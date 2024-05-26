@@ -1,9 +1,9 @@
 #  !/bin/bash 
 rm /bin/sh && ln -s /bin/bash /bin/sh
 # apt update
-RUN conda  create -n hairfast python=3.10 -y
-RUN source activate hairfast
-RUN conda activate hairfast
+# RUN conda  create -n hairfast python=3.10 -y
+# RUN source activate hairfast
+# RUN conda activate hairfast
 
 apt-get update
 apt-get install zip -y
