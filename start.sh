@@ -27,4 +27,4 @@ update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --forc
 # mv HairFastGAN/input input
 # rm -rf HairFastGAN
 
-# pip install -r requirements.txt
+pip install -r requirements.txt

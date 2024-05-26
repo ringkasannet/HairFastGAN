@@ -9,8 +9,6 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN chmod u+x ./setconda.sh
 RUN . ./setconda.sh
 
-RUN wget / git / zip
-
 RUN chmod u+x ./start.sh
 RUN . ./start.sh
 
