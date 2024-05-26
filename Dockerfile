@@ -1,4 +1,4 @@
-FROM pytorch/pytorch/conda-cuda
+FROM pytorch/conda-cuda
 
 WORKDIR /code
 
