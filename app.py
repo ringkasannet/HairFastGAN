@@ -207,5 +207,5 @@ def convert_images_aligned():
         print("found error when swapping")
         print(e)
         return jsonify({'error': str(e)}), 500
-# run command: gunicorn app:app -b :5000 -w 2
+# run command: gunicorn app:app -b :5000 -w 1
 
