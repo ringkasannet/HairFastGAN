@@ -21,18 +21,6 @@ unzip ninja-linux.zip -d /usr/local/bin/
 update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force
 
 
-# mkdir -p ~/miniconda3
-# wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
-# bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
-# rm -rf ~/miniconda3/miniconda.sh
-# ~/miniconda3/bin/conda init bash
-# ~/miniconda3/bin/conda init zsh
-# source ~/.profile
-
-# conda  create -n hairfast python=3.10 -y
-# source activate hairfast
-# conda activate hairfast
-
 # git clone https://huggingface.co/AIRI-Institute/HairFastGAN
 # cd HairFastGAN && git lfs pull && cd ..
 # mv HairFastGAN/pretrained_models pretrained_models
