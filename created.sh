@@ -33,4 +33,3 @@ mv HairFastGAN/pretrained_models pretrained_models
 mv HairFastGAN/input input
 rm -rf HairFastGAN
 
-pip install -r requirements.txt
