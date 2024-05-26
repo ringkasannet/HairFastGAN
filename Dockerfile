@@ -5,9 +5,8 @@ WORKDIR /code
 COPY . .
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-RUN 
-RUN chmod u+x ./setconda.sh
-RUN bash -i ./setconda.sh
+RUN conda create -n hairfast python=3.10 -y
+RUN conda activate hairfast
 
 RUN chmod u+x ./start.sh
 RUN . ./start.sh
