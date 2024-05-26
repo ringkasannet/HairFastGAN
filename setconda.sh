@@ -6,6 +6,6 @@ rm -rf ~/miniconda3/miniconda.sh
 ~/miniconda3/bin/conda init zsh
 source ~/.profile
 
-/root/miniconda3/bin/conda  create -n hairfast python=3.10 -y
-/root/miniconda3/bin/conda activate hairfast
+~/miniconda3/bin/conda  create -n hairfast python=3.10 -y
+~/miniconda3/bin/conda activate hairfast
 
