@@ -66,6 +66,33 @@ def chech_route():
 
 from datetime import datetime
 
+        
+import os
+from google.cloud import storage
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="barberfits-visualizer-8410bd16f96c.json"
+
+def upload_blob_from_memory(bucket_name, contents, destination_blob_name):
+    """Uploads a file to the bucket."""
+
+    # The ID of your GCS bucket
+    # bucket_name = "your-bucket-name"
+
+    # The contents to upload to the file
+    # contents = "these are my contents"
+
+    # The ID of your GCS object
+    # destination_blob_name = "storage-object-name"
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+
+    blob.upload_from_string(contents)
+
+    print(
+        f"{destination_blob_name} uploaded to {bucket_name}."
+    )
+
 @app.route('/convert', methods=['POST'])
 def convert_images():
     print("receiving convert request....")
@@ -87,9 +114,76 @@ def convert_images():
         checkpoint2 = time.time()
         print(f"finished downloading and converting to pils, took {checkpoint2-checkpoint1}")
         
-        result_image = hair_fast.swap(pil_images[0],pil_images[1],pil_images[2],align=True)[0]
+        result_images = hair_fast.swap(pil_images[0],pil_images[1],pil_images[2],align=True)
         checkpoint3 = time.time()
         print(f"finished swapping, took {checkpoint3-checkpoint2}")
+
+        # for i in range(len(result_image)):
+        #     print('saving images')
+        #     if isinstance(result_image[i], torch.Tensor):
+        #         save_image(result_image[i], f'/home/HairFastGAN/output/result{i}.png')
+        # # else:
+        #     # save_image(result_image, '/home/HairFastGAN/output/HairFast_result.png')
+        #     # result_image.save('/home/HairFastGan/output/HairFast_result.png')
+        # checkpoint4 = time.time()
+        # for index,image in enumerate(result_images):
+        #     if isinstance(image, torch.Tensor):
+        #         # save_image(image,f'/workspace/HairFastGAN/out/{index}.png')
+        #         image_byte=tensor_to_byte(result_images
+                
+        image_byte=tensor_to_byte(result_images[0])
+        upload_blob_from_memory("barberfits-photo-bucket",image_byte,"output.png")
+        url="https://storage.googleapis.com/barberfits-photo-bucket/output.png"
+        return url
+        return "success"
+    except Exception as e:
+        print("found error when swapping")
+        print(e)
+        return jsonify({'error': str(e)}), 500
+
+from tools import url_to_aligned_tensor
+@app.route('/processReferences', methods=['POST'])
+def process_references():
+    print("receiving convert request....")
+    checkpoint1 = time.time()
+    data = request.get_json()
+    face_url = data.get('face')
+    if not all([face_url]):
+        return jsonify({"error": "Missing image URLs"}), 400
+    aligned_face_tensor=url_to_aligned_tensor(face_url)
+    
+    reference_folder="aligned"
+    image_urls=[]
+    for filename in os.listdir(reference_folder):
+        full_filename=os.path.join(reference_folder, filename)
+        if os.path.isfile(full_filename):
+            base, ext = os.path.splitext(filename)
+            try:
+                print("images found and valid, converting...")
+                result_images = hair_fast.swap(aligned_face_tensor[0],full_filename,full_filename,align=False)
+                image_byte=tensor_to_byte(result_images)
+                upload_blob_from_memory("barberfits-photo-bucket",image_byte,"filename")
+                image_urls.append(f"https://storage.googleapis.com/barberfits-photo-bucket/{filename}")
+            except Exception as e:
+                print("found error when swapping")
+                print(e)
+                return jsonify({'error': str(e)}), 500
+
+    checkpoint3 = time.time()
+    print(f"finished swapping, took {checkpoint3-checkpoint2}")            
+    return image_urls
+
+
+@app.route('/convertAligned', methods=['POST'])
+def convert_images_aligned():
+    print("receiving convert request....")
+    torch.cuda.empty_cache()
+    checkpoint1 = time.time()
+    try:
+        
+        result_image = hair_fast.swap("/workspace/HairFastGAN/input/0.png","/workspace/HairFastGAN/input/1.png","/workspace/HairFastGAN/input/2.png")
+        checkpoint2 = time.time()
+        print(f"finished swapping, took {checkpoint2-checkpoint1}")
 
         # for i in range(len(result_image)):
         #     print('saving images')
@@ -103,9 +197,9 @@ def convert_images():
             image_byte=tensor_to_byte(result_image)
             # now = datetime.now() # current date and time
             # date_time = now.strftime("%H%M%S")
-            checkpoint4 = time.time()
+            checkpoint3 = time.time()
 
-            print(f"finished converting to byte, took {checkpoint4-checkpoint3}, total time: {checkpoint4-checkpoint1}")
+            print(f"finished converting to byte, took {checkpoint3-checkpoint2}, total time: {checkpoint3-checkpoint1}")
 
             # save_image(result_image,f'/workspace/HairFastGAN/output/{date_time}.png')
             return send_file(BytesIO(image_byte), mimetype='image/jpeg')
@@ -113,7 +207,5 @@ def convert_images():
         print("found error when swapping")
         print(e)
         return jsonify({'error': str(e)}), 500
-
-
 # run command: gunicorn app:app -b :5000 -w 2
 
