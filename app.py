@@ -7,96 +7,31 @@ from PIL import Image
 from io import BytesIO
 import requests
 import os
-from hair_swap import HairFast, get_parser
+# from hair_swap import HairFast, get_parser
 from torchvision.utils import save_image
 import torch
-from torchvision.transforms import ToPILImage
+import tools
+import storage
 
 app = Flask(__name__)
-app = Flask(__name__)
 
-hair_fast = HairFast(get_parser().parse_args([]))
+# hair_fast = HairFast(get_parser().parse_args([]))
 end_time=time.time()
 elapsed_time=end_time-start_time
 print(f"Time taken to download model: {elapsed_time} seconds")
 
-# if __name__ == '__main__':
-#     app.run_server(host='127.0.0.1', port='8050', debug=True)
+@app.route("/health",methods=['GET'])
+def health_check():
+    return {"healthy":True}        
 
+@app.route("/",methods=['GET'])
+def home():
+    return "in home"        
 
-def download_and_convert_to_pil(url):
-    response = requests.get(url, allow_redirects=True, headers={"User-Agent": "Mozilla/5.0"})
-    img = Image.open(BytesIO(response.content))
-    return img
-
-def tensor_to_byte(tensor):
-    """Converts a PyTorch tensor to a PIL Image."""
-    to_pil = ToPILImage()
-    pil_image= to_pil(tensor)
-    buffer = BytesIO()
-    pil_image.save(buffer, format="JPEG")
-    return buffer.getvalue()
-    
-def download_and_convert_to_pils(urls):
-    pil_images = []
-    for url in urls:
-        response = requests.get(url, allow_redirects=True, headers={"User-Agent": "Mozilla/5.0"})
-        img = Image.open(BytesIO(response.content))
-        pil_images.append(img)
-        print(f"Downloaded an image of size {img.size}")
-    return pil_images
-
-@app.route("/",methods=['POST'])
-def hello_world():
-    return "<p>Hello, World!</p>"
-
-from queue import Queue
-request_queue = Queue()
-
-@app.route("/check")
-def chech_route():
-    print("receiving checking request")
-    request_queue.put("halo")
-    while not request_queue.empty():
-        print(f"queue size: {request_queue.qsize()}")
-        request_queue.get()
-        print("sleeping for 10 seconds")
-        time.sleep(10)
-        return "<p> check complete <p>"
-
-from datetime import datetime
-
-        
-import os
-from google.cloud import storage
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="barberfits-visualizer-8410bd16f96c.json"
-
-def upload_blob_from_memory(bucket_name, contents, destination_blob_name):
-    """Uploads a file to the bucket."""
-
-    # The ID of your GCS bucket
-    # bucket_name = "your-bucket-name"
-
-    # The contents to upload to the file
-    # contents = "these are my contents"
-
-    # The ID of your GCS object
-    # destination_blob_name = "storage-object-name"
-
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-
-    blob.upload_from_string(contents)
-
-    print(
-        f"{destination_blob_name} uploaded to {bucket_name}."
-    )
 
 @app.route('/convert', methods=['POST'])
 def convert_images():
     print("receiving convert request....")
-    torch.cuda.empty_cache()
     checkpoint1 = time.time()
     data = request.get_json()
     face_url = data.get('face')
@@ -117,22 +52,9 @@ def convert_images():
         result_images = hair_fast.swap(pil_images[0],pil_images[1],pil_images[2],align=True)
         checkpoint3 = time.time()
         print(f"finished swapping, took {checkpoint3-checkpoint2}")
-
-        # for i in range(len(result_image)):
-        #     print('saving images')
-        #     if isinstance(result_image[i], torch.Tensor):
-        #         save_image(result_image[i], f'/home/HairFastGAN/output/result{i}.png')
-        # # else:
-        #     # save_image(result_image, '/home/HairFastGAN/output/HairFast_result.png')
-        #     # result_image.save('/home/HairFastGan/output/HairFast_result.png')
-        # checkpoint4 = time.time()
-        # for index,image in enumerate(result_images):
-        #     if isinstance(image, torch.Tensor):
-        #         # save_image(image,f'/workspace/HairFastGAN/out/{index}.png')
-        #         image_byte=tensor_to_byte(result_images
-                
-        image_byte=tensor_to_byte(result_images[0])
-        upload_blob_from_memory("barberfits-photo-bucket",image_byte,"output.png")
+        
+        image_byte=tools.tensor_to_byte(result_images[0])
+        storage.upload_blob_from_memory("barberfits-photo-bucket",image_byte,"output.png")
         url="https://storage.googleapis.com/barberfits-photo-bucket/output.png"
         return url
         return "success"
@@ -141,19 +63,33 @@ def convert_images():
         print(e)
         return jsonify({'error': str(e)}), 500
 
-from tools import url_to_aligned_tensor
-@app.route('/processReferences', methods=['POST'])
+@app.route('/reference', methods=['POST'])
+def add_reference():
+    print("adding reference")
+    reference_url=request.get_json().get('ref')
+    file_name=get_file_name_from_url(reference.url)
+    print(file_name)
+    ref_tensor=url_to_aligned_tensor(reference_url)
+    save_image(ref_tensor, f'/workspace/HairFastGAN/references/{file_name}.png')
+    return "success"
+
+
+@app.route('/process-references', methods=['POST'])
 def process_references():
-    print("receiving convert request....")
-    checkpoint1 = time.time()
-    data = request.get_json()
-    face_url = data.get('face')
-    if not all([face_url]):
-        return jsonify({"error": "Missing image URLs"}), 400
-    aligned_face_tensor=url_to_aligned_tensor(face_url)
     
-    reference_folder="aligned"
+    checkpoint1 = time.time()
+    face_url = request.get_json().get('face')
+    if not face_url:
+        return jsonify({"error": "Missing image URLs"}), 400
+    
+    print("receiving convert request....",face_url_file_name)
+
+    aligned_face_tensor=tools.url_to_aligned_tensor(face_url)
+    
+    face_url_file_name=tools.get_file_name_from_url(face_url)
+    reference_folder="references"
     image_urls=[]
+    i=0
     for filename in os.listdir(reference_folder):
         full_filename=os.path.join(reference_folder, filename)
         if os.path.isfile(full_filename):
@@ -161,26 +97,28 @@ def process_references():
             try:
                 print("images found and valid, converting...")
                 result_images = hair_fast.swap(aligned_face_tensor[0],full_filename,full_filename,align=False)
-                image_byte=tensor_to_byte(result_images)
-                upload_blob_from_memory("barberfits-photo-bucket",image_byte,"filename")
-                image_urls.append(f"https://storage.googleapis.com/barberfits-photo-bucket/{filename}")
+                image_byte=tools.tensor_to_byte(result_images)
+                storage.upload_blob_from_memory("barberfits-photo-bucket",image_byte,f"cache/{face_url_file_name}-{base}.png")
+                i=i+1
+                yield f"https://storage.googleapis.com/barberfits-photo-bucket/cache/{face_url_file_name}-{base}.png"
             except Exception as e:
                 print("found error when swapping")
                 print(e)
                 return jsonify({'error': str(e)}), 500
 
-    checkpoint3 = time.time()
-    print(f"finished swapping, took {checkpoint3-checkpoint2}")            
+    checkpoint2 = time.time()
+    print(f"finished swapping, took {checkpoint2-checkpoint1}")            
     return image_urls
 
-
-@app.route('/convertAligned', methods=['POST'])
+@app.route('/references/<id>',methods=['POST'])
+def changeReferences():
+    return {id:id,url:request.args.url}
+    
+@app.route('/convert-aligned', methods=['POST'])
 def convert_images_aligned():
     print("receiving convert request....")
-    torch.cuda.empty_cache()
     checkpoint1 = time.time()
     try:
-        
         result_image = hair_fast.swap("/workspace/HairFastGAN/input/0.png","/workspace/HairFastGAN/input/1.png","/workspace/HairFastGAN/input/2.png")
         checkpoint2 = time.time()
         print(f"finished swapping, took {checkpoint2-checkpoint1}")
@@ -194,9 +132,7 @@ def convert_images_aligned():
         #     # result_image.save('/home/HairFastGan/output/HairFast_result.png')
         # checkpoint4 = time.time()
         if isinstance(result_image, torch.Tensor):
-            image_byte=tensor_to_byte(result_image)
-            # now = datetime.now() # current date and time
-            # date_time = now.strftime("%H%M%S")
+            image_byte=tools.tensor_to_byte(result_image)
             checkpoint3 = time.time()
 
             print(f"finished converting to byte, took {checkpoint3-checkpoint2}, total time: {checkpoint3-checkpoint1}")
