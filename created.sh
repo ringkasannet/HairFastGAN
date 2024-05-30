@@ -31,3 +31,7 @@ mv HairFastGAN/pretrained_models pretrained_models
 mv HairFastGAN/input input
 rm -rf HairFastGAN
 
+
+source /workspace/miniconda3/etc/profile.d/conda.sh 
+conda activate hairfast
+pip install -r requirements.txt
