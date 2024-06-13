@@ -2,30 +2,40 @@ print("downloading model and initiating server")
 import time
 start_time = time.time()
 
-from flask import Flask, send_file, request, jsonify
+from flask import Flask, send_file, request, jsonify, stream_with_context
 from PIL import Image
 from io import BytesIO
 import requests
 import os
-# from hair_swap import HairFast, get_parser
+from hair_swap import HairFast, get_parser
 from torchvision.utils import save_image
 import torch
 import tools
 import storage
+import json
 
 app = Flask(__name__)
 
-# hair_fast = HairFast(get_parser().parse_args([]))
+hair_fast = HairFast(get_parser().parse_args([]))
 end_time=time.time()
 elapsed_time=end_time-start_time
 print(f"Time taken to download model: {elapsed_time} seconds")
 
 @app.route("/health",methods=['GET'])
 def health_check():
-    return {"healthy":True}        
+    print("checking for health")
+    response = {"healthy": True}
+    yield "1"
+    return jsonify(response), 200, {'Content-Type': 'application/json'}
 
 @app.route("/",methods=['GET'])
 def home():
+    print("we are called in home")
+    return "in home"        
+
+@app.route("/check-references",methods=['GET'])
+def check_references():
+    print("we are called in home")
     return "in home"        
 
 
@@ -65,50 +75,59 @@ def convert_images():
 
 @app.route('/reference', methods=['POST'])
 def add_reference():
-    print("adding reference")
     reference_url=request.get_json().get('ref')
-    file_name=get_file_name_from_url(reference.url)
-    print(file_name)
-    ref_tensor=url_to_aligned_tensor(reference_url)
+    file_name=tools.get_file_name_from_url(reference_url)
+    print("adding reference:",file_name)
+    ref_tensor=tools.url_to_aligned_tensor(reference_url)
     save_image(ref_tensor, f'/workspace/HairFastGAN/references/{file_name}.png')
-    return "success"
+    return jsonify({"success":True})
+
+@app.route('/reference/<item_id>', methods=['DELETE'])
+def delete_reference(item_id):
+    folder_name="/workspace/HairFastGAN/references"
+    file_name=f"{item_id}.png"
+    storage.delete_file(folder_name,file_name)
+    return {"success":True}
 
 
 @app.route('/process-references', methods=['POST'])
 def process_references():
-    
-    checkpoint1 = time.time()
-    face_url = request.get_json().get('face')
-    if not face_url:
-        return jsonify({"error": "Missing image URLs"}), 400
-    
-    print("receiving convert request....",face_url_file_name)
 
-    aligned_face_tensor=tools.url_to_aligned_tensor(face_url)
+    def process_references_generator():
+        checkpoint1 = time.time()
+        face_url = request.get_json().get('face')
+        id=request.get_json().get('id')
+        if not face_url:
+            return jsonify({"error": "Missing image URLs"}), 400
     
-    face_url_file_name=tools.get_file_name_from_url(face_url)
-    reference_folder="references"
-    image_urls=[]
-    i=0
-    for filename in os.listdir(reference_folder):
-        full_filename=os.path.join(reference_folder, filename)
-        if os.path.isfile(full_filename):
-            base, ext = os.path.splitext(filename)
-            try:
-                print("images found and valid, converting...")
-                result_images = hair_fast.swap(aligned_face_tensor[0],full_filename,full_filename,align=False)
-                image_byte=tools.tensor_to_byte(result_images)
-                storage.upload_blob_from_memory("barberfits-photo-bucket",image_byte,f"cache/{face_url_file_name}-{base}.png")
-                i=i+1
-                yield f"https://storage.googleapis.com/barberfits-photo-bucket/cache/{face_url_file_name}-{base}.png"
-            except Exception as e:
-                print("found error when swapping")
-                print(e)
-                return jsonify({'error': str(e)}), 500
+        aligned_face_tensor=tools.url_to_aligned_tensor(face_url)
+        face_url_file_name=tools.get_file_name_from_url(face_url)
+        print("receiving convert request....",face_url_file_name)
 
-    checkpoint2 = time.time()
-    print(f"finished swapping, took {checkpoint2-checkpoint1}")            
-    return image_urls
+        reference_folder="references"
+        image_urls=[]
+        i=0
+        for filename in os.listdir(reference_folder):
+            full_filename=os.path.join(reference_folder, filename)
+            if os.path.isfile(full_filename):
+                base, ext = os.path.splitext(filename)
+                try:
+                    print("images found and valid, converting...")
+                    result_images = hair_fast.swap(aligned_face_tensor[0],full_filename,full_filename,align=False)
+                    image_byte=tools.tensor_to_byte(result_images)
+                    storage.upload_blob_from_memory("barberfits-photo-bucket",image_byte,f"result/{id}/{base}.png")
+                    i=i+1
+                    # yield jsonify({"id":base,"url":f"https://storage.googleapis.com/barberfits-photo-bucket/result/{id}/{base}.png"})
+                    yield json.dumps({"id": base, "url": f"https://storage.googleapis.com/barberfits-photo-bucket/result/{id}/{base}.png"}).encode('utf-8')
+                except Exception as e:
+                    print("found error when swapping")
+                    print(e)
+                    return jsonify({'error': str(e)}), 500
+
+        checkpoint2 = time.time()
+        print(f"finished swapping, took {checkpoint2-checkpoint1}")            
+    # return image_urls
+    return stream_with_context(process_references_generator())
 
 @app.route('/references/<id>',methods=['POST'])
 def changeReferences():

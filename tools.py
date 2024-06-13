@@ -11,7 +11,6 @@ from io import BytesIO
 from torchvision.transforms import ToPILImage
 
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="barberfits-visualizer-8410bd16f96c.json"
 
 
 def url_to_aligned_tensor(url):

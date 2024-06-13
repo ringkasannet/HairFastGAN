@@ -21,9 +21,9 @@ conda activate hairfast
 source ~/.profile
 
 
-wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip
-unzip -o ninja-linux.zip -d /usr/local/bin/
-update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force 
+# wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip
+# unzip -o ninja-linux.zip -d /usr/local/bin/
+update-alternatives --install /usr/local/bin/ninja ninja /workspace/HairFastGAN/ninja 1 --force 
 
 git clone https://huggingface.co/AIRI-Institute/HairFastGAN
 cd HairFastGAN && git lfs pull && cd ..

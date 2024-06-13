@@ -8,6 +8,8 @@ test*.txt
 *.pt
 *.zip
 
+barberfits-visualizer-8410bd16f96c.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
